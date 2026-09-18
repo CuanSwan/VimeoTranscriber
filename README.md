@@ -39,8 +39,6 @@ python -m vimeotranscriber.cli links.txt
 python -m vimeotranscriber.cli links.txt -o transcripts --language en
 ```
 
-If no file is given, it defaults to `links.txt` in the current directory.
-
 Or, after installing the package (`pip install -e .`), use the `vimeo-transcriber`
 command directly.
 

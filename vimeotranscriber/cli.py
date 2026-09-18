@@ -77,10 +77,8 @@ def main(argv: list[str] | None = None) -> int:
     )
     parser.add_argument(
         "input_file",
-        nargs="?",
-        default="links.txt",
         help="Text file with one Vimeo URL or ID per line (blank lines and lines "
-        "starting with # are ignored). Defaults to 'links.txt'.",
+        "starting with # are ignored).",
     )
     parser.add_argument(
         "-o", "--output-dir", default="transcripts", help="Directory to save transcripts to."
