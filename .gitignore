@@ -1,7 +1,6 @@
 __pycache__/
 *.pyc
 .env
-links.txt
 transcripts/
 *.egg-info/
 build/
