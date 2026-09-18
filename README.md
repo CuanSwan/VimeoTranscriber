@@ -30,7 +30,11 @@ export $(cat .env | xargs)
 
 Run it with no arguments and it will walk you through everything —
 whether to load links from a file or paste them in, which API keys to use
-(if you haven't set them in `.env`), and where to save the output:
+(if you haven't set them in `.env`), and where to save the output.
+
+When pasting, you can dump in a whole block of links at once — one per
+line, or comma/space-separated — then finish with a blank line or
+Ctrl+D (Ctrl+Z then Enter on Windows):
 
 ```bash
 python -m vimeotranscriber.cli

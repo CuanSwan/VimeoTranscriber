@@ -1,5 +1,6 @@
 import argparse
 import os
+import re
 import sys
 import tempfile
 from pathlib import Path
@@ -136,13 +137,18 @@ def prompt(message: str, default: str = "") -> str:
 
 
 def prompt_for_urls() -> list[str]:
-    print("Enter Vimeo links, one per line. Leave a blank line when you're done.")
+    print("Paste your Vimeo links now — one per line, or comma/space-separated.")
+    print("Leave a blank line, or press Ctrl+D (Ctrl+Z then Enter on Windows), when done.")
     urls = []
     while True:
-        line = input("> ").strip()
+        try:
+            line = input("> ")
+        except EOFError:
+            break
+        line = line.strip()
         if not line:
             break
-        urls.append(line)
+        urls.extend(token for token in re.split(r"[,\s]+", line) if token)
     return urls
 
 
