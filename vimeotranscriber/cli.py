@@ -51,12 +51,37 @@ def process_url(
     return out_path
 
 
+def read_urls_from_file(path: Path) -> list[str]:
+    if not path.exists():
+        raise FileNotFoundError(
+            f"Input file {path} not found. Create it with one Vimeo URL or ID per line."
+        )
+
+    urls = []
+    for line in path.read_text(encoding="utf-8").splitlines():
+        line = line.strip()
+        if not line or line.startswith("#"):
+            continue
+        urls.append(line)
+
+    if not urls:
+        raise ValueError(f"Input file {path} contains no URLs.")
+
+    return urls
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(
         description="Fetch transcripts for Vimeo videos: uses official captions when "
         "available, falls back to Whisper speech-to-text otherwise."
     )
-    parser.add_argument("urls", nargs="+", help="One or more Vimeo video URLs or IDs.")
+    parser.add_argument(
+        "input_file",
+        nargs="?",
+        default="links.txt",
+        help="Text file with one Vimeo URL or ID per line (blank lines and lines "
+        "starting with # are ignored). Defaults to 'links.txt'.",
+    )
     parser.add_argument(
         "-o", "--output-dir", default="transcripts", help="Directory to save transcripts to."
     )
@@ -80,9 +105,15 @@ def main(argv: list[str] | None = None) -> int:
     )
     args = parser.parse_args(argv)
 
+    try:
+        urls = read_urls_from_file(Path(args.input_file))
+    except (FileNotFoundError, ValueError) as exc:
+        print(f"Error: {exc}", file=sys.stderr)
+        return 1
+
     output_dir = Path(args.output_dir)
     exit_code = 0
-    for url in args.urls:
+    for url in urls:
         try:
             process_url(
                 url,

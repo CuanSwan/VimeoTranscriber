@@ -1,0 +1,4 @@
+# One Vimeo URL or video ID per line. Lines starting with # are ignored.
+https://vimeo.com/123456789
+https://vimeo.com/123456789/abcdef1234
+987654321

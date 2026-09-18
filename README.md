@@ -26,14 +26,20 @@ export $(cat .env | xargs)
 
 ## Usage
 
-```bash
-python -m vimeotranscriber.cli https://vimeo.com/123456789
+List the videos you want transcribed in a text file, one URL (or bare video
+ID) per line — blank lines and lines starting with `#` are ignored. See
+`links.txt.example` for the format.
 
-# multiple videos, custom output directory, preferred language
-python -m vimeotranscriber.cli \
-  https://vimeo.com/123456789 https://vimeo.com/987654321 \
-  -o transcripts --language en
+```bash
+cp links.txt.example links.txt   # then edit it with your video links
+
+python -m vimeotranscriber.cli links.txt
+
+# custom output directory and preferred language
+python -m vimeotranscriber.cli links.txt -o transcripts --language en
 ```
+
+If no file is given, it defaults to `links.txt` in the current directory.
 
 Or, after installing the package (`pip install -e .`), use the `vimeo-transcriber`
 command directly.
