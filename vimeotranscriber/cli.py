@@ -51,7 +51,7 @@ def process_url(
     language: str | None,
     video_password: str | None,
     ffmpeg_location: str | None = None,
-) -> Path:
+) -> tuple[Path, str]:
     ref = parse_vimeo_url(url)
     transcript = None
     source = None
@@ -87,7 +87,20 @@ def process_url(
     out_path = output_dir / f"{ref.video_id}_transcript.txt"
     out_path.write_text(transcript, encoding="utf-8")
     print(f"[{ref.video_id}] Transcript saved to {out_path} (source: {source})")
-    return out_path
+    return out_path, transcript
+
+
+SEPARATOR = "=" * 60
+
+
+def write_combined_transcript(
+    output_dir: Path, entries: list[tuple[str, str]]
+) -> Path:
+    """Write all transcripts into one file, each preceded by its source link."""
+    sections = [f"{SEPARATOR}\n{url}\n{SEPARATOR}\n{transcript}" for url, transcript in entries]
+    combined_path = output_dir / "all_transcripts.txt"
+    combined_path.write_text("\n\n".join(sections) + "\n", encoding="utf-8")
+    return combined_path
 
 
 def read_urls_from_file(path: Path) -> list[str]:
@@ -143,9 +156,10 @@ def run_batch(
     ffmpeg_location: str | None,
 ) -> int:
     exit_code = 0
+    entries = []
     for url in urls:
         try:
-            process_url(
+            _, transcript = process_url(
                 url,
                 output_dir,
                 vimeo_token,
@@ -154,9 +168,16 @@ def run_batch(
                 video_password,
                 ffmpeg_location=ffmpeg_location,
             )
+            entries.append((url, transcript))
         except Exception as exc:
             print(f"Error processing {url}: {exc}", file=sys.stderr)
             exit_code = 1
+
+    if entries:
+        output_dir.mkdir(parents=True, exist_ok=True)
+        combined_path = write_combined_transcript(output_dir, entries)
+        print(f"Combined transcript saved to {combined_path}")
+
     return exit_code
 
 

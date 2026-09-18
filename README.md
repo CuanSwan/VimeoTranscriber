@@ -54,7 +54,9 @@ python -m vimeotranscriber.cli links.txt -o transcripts --language en
 Or, after installing the package (`pip install -e .`), use the `vimeo-transcriber`
 command directly.
 
-Transcripts are saved as `<output-dir>/<video_id>_transcript.txt`.
+Each transcript is saved individually as `<output-dir>/<video_id>_transcript.txt`,
+and all of them are also combined into `<output-dir>/all_transcripts.txt`, with
+each transcript preceded by its source link as a separator.
 
 ### Notes
 
